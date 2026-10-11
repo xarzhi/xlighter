@@ -1,0 +1,109 @@
+<window title="xLighter" width="460" height="270"
+        min-width="420" min-height="250"
+        resizable="false" centered="true" frameless="true" theme="light"/>
+
+<script>
+export default {
+  data() {
+    return {
+      page: "home",       // home | settings
+      brightness: 80,     // 0~100，C 侧轮询后应用 gamma
+      modeIdx: 0,         // 0标准 1防蓝光 2护眼 3游戏
+      autoStart: false    // 开机自启（C 侧写注册表）
+    };
+  },
+  methods: {
+    go(p)  { this.page = p; },
+    setMode(m) { this.modeIdx = m; }
+  }
+}
+</script>
+
+<style>
+  .root    { gap: 0; background: var(--bg); }
+  .content { padding: 16px 20px 18px 20px; gap: 14px; flex: 1; }
+
+  /* 亮度卡片 */
+  .card    { padding: 16px; gap: 12px; background: var(--card-bg);
+             border-radius: 8px; }
+  .row     { flex-direction: row; align-items: center;
+             justify-content: space-between; }
+  .lbl     { font-size: 14px; color: var(--fg); font-weight: 600; }
+  .sub     { font-size: 12px; color: var(--fg-3); }
+  .val     { font-size: 20px; color: var(--accent); font-weight: 700; }
+  .slider  { width: 100%; }
+
+  /* 模式按钮 */
+  .modes   { flex-direction: row; gap: 10px; width: 100%; }
+  .mode    { flex: 1; height: 40px; align-items: center; justify-content: center;
+             border-radius: 6px; background: var(--bg-3); color: var(--fg-2);
+             font-size: 13px; cursor: pointer; }
+  .mode:hover { background: var(--bg-2); color: var(--fg); }
+  .mode.on { background: var(--accent); color: #ffffff; font-weight: 600; }
+
+  /* 标题栏里的设置按钮 */
+  .tb-btn  { width: 34px; height: 26px; align-items: center; justify-content: center;
+             border-radius: 4px; color: var(--fg-2); font-size: 14px; cursor: pointer; }
+  .tb-btn:hover { background: var(--bg-3); color: var(--fg); }
+
+  /* 设置页 */
+  .set-head { flex-direction: row; align-items: center; gap: 10px; }
+  .back    { width: 30px; height: 30px; align-items: center; justify-content: center;
+             border-radius: 6px; background: var(--bg-3); color: var(--fg);
+             font-size: 14px; cursor: pointer; }
+  .back:hover { background: var(--bg-2); }
+  .h1      { font-size: 18px; color: var(--fg); font-weight: 700; }
+  .setrow  { flex-direction: row; align-items: center;
+             justify-content: space-between; }
+  .about   { padding: 14px 18px; gap: 6px; background: var(--card-bg);
+             border-radius: 8px; }
+</style>
+
+<template>
+  <div class="root">
+    <TitleBar title="xLighter">
+      <button class="tb-btn" v-if="page=='home'" @click="go('settings')">⚙</button>
+    </TitleBar>
+
+    <!-- 主页：亮度 + 模式 -->
+    <div class="content" v-if="page=='home'">
+      <div class="card">
+        <div class="row">
+          <label class="lbl">亮度</label>
+          <label class="val">{{ brightness }}%</label>
+        </div>
+        <input class="slider" type="range" min="15" max="100" v-model="brightness"/>
+      </div>
+
+      <div class="modes">
+        <button :class="modeIdx==0 ? 'mode on' : 'mode'" @click="setMode(0)">标准</button>
+        <button :class="modeIdx==1 ? 'mode on' : 'mode'" @click="setMode(1)">防蓝光</button>
+        <button :class="modeIdx==2 ? 'mode on' : 'mode'" @click="setMode(2)">护眼</button>
+        <button :class="modeIdx==3 ? 'mode on' : 'mode'" @click="setMode(3)">游戏</button>
+      </div>
+    </div>
+
+    <!-- 设置页 -->
+    <div class="content" v-if="page=='settings'">
+      <div class="set-head">
+        <div class="back" @click="go('home')">‹</div>
+        <label class="h1">设置</label>
+      </div>
+
+      <div class="card">
+        <div class="setrow">
+          <div>
+            <label class="lbl">开机自启</label>
+            <label class="sub">登录 Windows 时静默启动，不显示主窗口</label>
+          </div>
+          <toggle v-model="autoStart"/>
+        </div>
+      </div>
+
+      <div class="about">
+        <label class="lbl">关于</label>
+        <label class="sub">xLighter v0.2.0 · 基于 Core UI</label>
+      </div>
+    </div>
+  </div>
+</template>

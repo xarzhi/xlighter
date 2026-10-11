@@ -1,0 +1,4 @@
+// xLighter 资源：ID=1 的应用图标。
+// core-ui 会自动加载 exe 里资源 ID=1 的图标（标题栏高分辨率 + 窗口图标），
+// 托盘也从这个资源 LoadIcon。
+1 ICON "app.ico"
